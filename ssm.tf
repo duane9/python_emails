@@ -1,5 +1,3 @@
-
-# Define the SecureString parameter for the Open AI API Key
 resource "aws_ssm_parameter" "open_ai_api_key" {
   name        = "OPEN_AI_API_KEY"
   type        = "SecureString"
@@ -7,7 +5,6 @@ resource "aws_ssm_parameter" "open_ai_api_key" {
   description = "Open AI API key for the Lambda function"
 }
 
-# Define the SecureString parameter for the SES email
 resource "aws_ssm_parameter" "email_for_ses" {
   name        = "EMAIL_FOR_SES"
   type        = "SecureString"

@@ -15,6 +15,6 @@ variable "ses_email" {
 }
 
 variable "open_ai_api_key" {
-  description = "The verified email address for SES."
+  description = "The OpenAi API key."
   type        = string
 }
