@@ -70,5 +70,5 @@ place:
 - I made the project work with content from the Python Standard Library.
 - I did this on a Mac, so I made some changes to the setup script to work on a
   Mac.
-- I added an MIT license.
 - I used Python 3.13 instead of Python 3.8.
+- I added an MIT license.

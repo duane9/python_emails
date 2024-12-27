@@ -1,11 +1,9 @@
 import json
-from typing import Any, List, Dict
 import boto3
 from openai import OpenAI
 
-# HELPER FUNCTIONS ------------------------------------------------------------------
 
-def get_ssm_parameter(parameter_name: str) -> str:
+def get_ssm_parameter(parameter_name):
     try:
         response = ssm_client.get_parameter(Name=parameter_name, WithDecryption=True)
         return response["Parameter"]["Value"]
@@ -13,51 +11,55 @@ def get_ssm_parameter(parameter_name: str) -> str:
         print(f"Error retrieving parameter {parameter_name} from SSM: {e}")
         raise
 
-def get_all_words() -> str:
+
+def get_all_items():
     try:
         response = table.scan()
-        words = [item["word"] for item in response.get("Items", [])]
-        formatted_words = ", ".join(words)
-        return formatted_words
+        items = [item["word"] for item in response.get("Items", [])]
+        formatted_items = ", ".join(items)
+        return formatted_items
     except Exception as e:
-        print(f"Error retrieving words from DynamoDB: {e}")
+        print(f"Error retrieving items from DynamoDB: {e}")
         raise
 
-def put_words_in_db_table(words: List[Dict[str, str]]) -> None:
+
+def put_items_in_db_table(items):
     try:
         with table.batch_writer() as batch:
-            for word_entry in words:
+            for item_entry in items:
                 if not all(
-                    key in word_entry for key in ("word", "translation", "example")
+                    key in item_entry for key in ("item", "explanation", "example")
                 ):
                     raise ValueError(
-                        f"Invalid word entry: {word_entry}. Must contain 'word', 'translation', and 'example' keys."
+                        f"Invalid entry: {item_entry}. Must contain 'item', 'explanation', and 'example' keys."
                     )
                 batch.put_item(
                     Item={
-                        "word": word_entry["word"],
-                        "translation": word_entry["translation"],
-                        "example": word_entry["example"],
+                        "word": item_entry["item"],
+                        "explanation": item_entry["explanation"],
+                        "example": item_entry["example"],
                     }
                 )
-        print("All words successfully inserted into the db table.")
+        print("All items successfully inserted into the db table.")
     except Exception as e:
-        print(f"Error inserting words into the DynamoDB table: {e}")
+        print(f"Error inserting items into the DynamoDB table: {e}")
         raise
 
-def create_prompt(existing_words: str) -> str:
+
+def create_prompt(existing_items):
     return (
-        f"Provide exactly 3 words in Dutch at the C1 level, but none of those: {existing_words}. "
+        "Provide exactly 3 Python items from the Python Standard Library modules or built-in functions,"
+        f"but none of those: {existing_items}. "
         "Return them as an array of dictionaries. Each dictionary should include the fields: "
-        '"word" (the Dutch word), "translation" (the English translation), '
-        'and "example" (a sentence using the word in context). Example format: '
-        '[{"word": "word1", "translation": "example1", "example": "sentence1"}, '
-        '{"word": "word2", "translation": "example2", "example": "sentence2"}, '
-        '{"word": "word3", "translation": "example3", "example": "sentence3"}]. '
-        "Do not add any additional words, explanations, or introductions in your reply. Just return the array."
+        '"item" (the Python item), "explanation" (a short explanation of the item), '
+        'and "example" (a code snippet showing how to use the item). Example format: '
+        '[{"item": "item1", "explanation": "explanation1", "example": "example1"}, '
+        '[{"item": "item2", "explanation": "explanation2", "example": "example2"}, '
+        '[{"item": "item3", "explanation": "explanation3", "example": "example3"}, '
+        "Do not add any additional items, explanations, or introductions in your reply. Just return the array."
     )
 
-# Initialize -------------------------------
+
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table("WordsTable")
 ssm_client = boto3.client("ssm")
@@ -65,35 +67,31 @@ ses_client = boto3.client("ses")
 ses_email = get_ssm_parameter("EMAIL_FOR_SES")
 client = OpenAI(api_key=get_ssm_parameter("OPEN_AI_API_KEY"))
 
-# Lambda code -------------------------------
-def lambda_handler(event: Any, context: Any) -> Dict[str, Any]:
-    """
-    Lambda function handler that retrieves words from the DynamoDB table, calls the OpenAI API to generate new words,
-    stores the words in DynamoDB, and sends an email with the words using AWS SES.
-    """
+
+def lambda_handler(event, context):
     try:
-        words = get_all_words()
-        prompt  = create_prompt(words)
+        items = get_all_items()
+        prompt = create_prompt(items)
 
         response = client.chat.completions.create(
             model="gpt-4", messages=[{"role": "user", "content": prompt}]
         )
 
         response_content = response.choices[0].message.content
-        json_response = json.loads(response_content)
-
-        put_words_in_db_table(json_response)
+        print(f"Response from OpenAI: {response_content}")
+        print(type(response_content))
+        json_response = json.loads(r"{}".format(response_content))
 
         # Format email for SES
         formatted_html = "<html><body>"
-        formatted_html += "<h2>🇳🇱 Jouw woorden voor vandaag</h2>"
+        formatted_html += "<h2>Python Standard Library Examples</h2>"
         formatted_html += (
             "<table border='1' cellpadding='10' style='border-collapse: collapse;'>"
         )
-        formatted_html += "<tr><th>Word</th><th>Translation</th><th>Example</th></tr>"
+        formatted_html += "<tr><th>Item</th><th>Explanation</th><th>Example</th></tr>"
 
         for item in json_response:
-            formatted_html += f"<tr><td>{item['word']}</td><td>{item['translation']}</td><td>{item['example']}</td></tr>"
+            formatted_html += f"<tr><td>{item['item']}</td><td>{item['explanation']}</td><td><pre>{item['example']}</pre></td></tr>"
 
         formatted_html += "</table>"
         formatted_html += "</body></html>"
@@ -102,10 +100,12 @@ def lambda_handler(event: Any, context: Any) -> Dict[str, Any]:
             Source=ses_email,
             Destination={"ToAddresses": [ses_email]},
             Message={
-                "Subject": {"Data": "📚 Jouw dagelijkse woordenschat"},
+                "Subject": {"Data": "Python Standard Library Examples"},
                 "Body": {"Html": {"Data": formatted_html}},
             },
         )
+
+        put_items_in_db_table(json_response)
 
         return {"statusCode": 200, "body": "Email sent successfully."}
 
