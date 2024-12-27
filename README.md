@@ -13,6 +13,8 @@ This project also provided an opportunity to refresh my skills in **Terraform** 
 
 
 ## Simplified Architecture
+A CloudWatch Event Rule triggers a Lambda each morning at 7:00. The Lambda retrieves all previously sent Dutch words from DynamoDB. It then retrieves three new words from ChatGPT, stores them in DynamoDB, and sends them to SES. SES delivers them to the end user's email.
+
 ![Picture of architecture](/images/architecture.jpg)
 
 
