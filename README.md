@@ -7,6 +7,8 @@ Python Standard Library. The email contains the item's name, explanation, and an
 example. The project uses AWS Lambda, Amazon SES, and DynamoDB to deliver the
 email.
 
+![Screenshot of email](/images/email.png)
+
 ## Motivation
 
 This project is a fork of the awesome
