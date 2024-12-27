@@ -3,7 +3,7 @@
 ## Overview
 This project automates the daily delivery of an email containing three C1-level Dutch words, their English translations, and example sentences. The email looks like this:
 
-![Screenshot of email](/dutch_vocabulary/images/email.png)
+![Screenshot of email](/images/email.png)
 
 ### Motivation
 I created this project because I couldn't find a suitable app to help me build a C1-level Dutch vocabulary. I discovered that ChatGPT provides good word suggestions and decided to automate the process. Additionally, I know that I check emails more consistently than apps, making this method more effective for learning.
@@ -13,7 +13,7 @@ This project also provided an opportunity to refresh my skills in **Terraform** 
 ---
 
 ## Simplified Architecture
-![Picture of architecture](/dutch_vocabulary/images/architecture.jpg)
+![Picture of architecture](/images/architecture.jpg)
 
 ---
 
