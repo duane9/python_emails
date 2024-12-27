@@ -12,6 +12,6 @@ resource "aws_lambda_function" "hello_world_lambda" {
   runtime          = "python3.13"
   filename         = "deployment_package.zip"
   source_code_hash = filebase64sha256("deployment_package.zip")
-  timeout          = 10
+  timeout          = 60
 }
 
