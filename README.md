@@ -2,14 +2,14 @@
 
 ## Overview
 
-This project automates the daily delivery of an email one item from the Python
-Standard Library. The email contains the item's name, module, and a brief
-description. The project uses AWS Lambda, Amazon SES, and DynamoDB to deliver
-the email.
+This project automates the daily delivery of an email with three items from the
+Python Standard Library. The email contains the item's name, explanation, and an
+example. The project uses AWS Lambda, Amazon SES, and DynamoDB to deliver the
+email.
 
 ## Motivation
 
-This project is a fork on the
+This project is a fork of the awesome
 [Dutch Vocabulary](https://github.com/ThReinecke/dutch_vocabulary) project. I
 wanted to do something similar but with the Python Standard Library.
 
