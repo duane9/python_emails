@@ -5,8 +5,9 @@ This project automates the daily delivery of an email containing three C1-level 
 
 ![Screenshot of email](/images/email.png)
 
-
-
+<br>
+<br>
+<br>
 
 ## Motivation
 I created this project because I couldn't find a suitable app to help me build a C1-level Dutch vocabulary. I discovered that ChatGPT provides good word suggestions and decided to automate the process. Additionally, I know that I check emails more consistently than apps, making this method more effective for learning.
@@ -14,12 +15,8 @@ I created this project because I couldn't find a suitable app to help me build a
 This project also provided an opportunity to refresh my skills in **Terraform** and **Python**.
 
 
-
-
 ## Simplified Architecture
 ![Picture of architecture](/images/architecture.jpg)
-
-
 
 
 ## Setup
@@ -46,8 +43,6 @@ To deploy this project, ensure the following tools and configurations are in pla
    - Alternatively, use the pre-zipped package: `deployment_package.zip`.
 
 
-
-
 ### Deployment Steps
 
 1. **Prepare Configuration:**
@@ -60,8 +55,6 @@ To deploy this project, ensure the following tools and configurations are in pla
    terraform plan
    terraform apply
    ```
-
-
 
 
 ## Considerations
