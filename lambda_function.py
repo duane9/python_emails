@@ -78,8 +78,6 @@ def lambda_handler(event, context):
         )
 
         response_content = response.choices[0].message.content
-        print(f"Response from OpenAI: {response_content}")
-        print(type(response_content))
         json_response = json.loads(r"{}".format(response_content))
 
         # Format email for SES
