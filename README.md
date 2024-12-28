@@ -67,10 +67,10 @@ place:
    terraform apply
    ```
 
-### Changes from the original project
+## Changes from the original project
 
-- I made the project work with content from the Python Standard Library.
-- I did this on a Mac, so I made some changes to the setup script to work on a
+- Made the project work with content from the Python Standard Library.
+- Did this on a Mac, so I made some changes to the setup script to work on a
   Mac.
-- I used Python 3.13 instead of Python 3.8.
-- I added an MIT license.
+- Used Python 3.13 instead of Python 3.8.
+- Added an MIT license.
